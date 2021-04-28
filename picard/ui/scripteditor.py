@@ -359,10 +359,7 @@ class ScriptEditorPage(PicardDialog):
     def toggle_documentation(self):
         """Toggle the display of the scripting documentation sidebar.
         """
-        if self.ui.show_documentation.isChecked():
-            self.ui.documentation_frame.show()
-        else:
-            self.ui.documentation_frame.hide()
+        self.ui.documentation_frame.setVisible(self.ui.show_documentation.isChecked())
 
     def select_script(self):
         """Set the current script from the combo box.
