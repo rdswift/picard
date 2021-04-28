@@ -351,7 +351,8 @@ class ScriptEditorPage(PicardDialog):
     def eventFilter(self, object, event):
         """Process selected events.
         """
-        if event.type() == QtCore.QEvent.WindowActivate or event.type() == QtCore.QEvent.FocusIn:
+        evtype = event.type()
+        if evtype in {QtCore.QEvent.WindowActivate, QtCore.QEvent.FocusIn}:
             self.update_examples()
         return False
 
