@@ -60,6 +60,7 @@ class TagVarTest(PicardTestCase):
         self.assertFalse(tv.is_file_info)
         self.assertTrue(tv.is_from_mb)
         self.assertTrue(tv.is_populated_by_picard)
+        self.assertFalse(tv.is_multi_value)
         self.assertIsNone(tv.see_also)
         self.assertIsNone(tv.related_options)
         self.assertIsNone(tv.doc_links)
