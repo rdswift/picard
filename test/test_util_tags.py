@@ -371,7 +371,8 @@ class UtilTagsTest(PicardTestCase):
         self.assertEqual(display_tag_tooltip('performer'), result)
 
     def test_display_tag_full_description(self):
-        profile_groups_add_setting('junk', 'use_genres', None, 'Use genres from MusicBrainz')
+        if ('setting', 'use_genres') not in Option.registry:
+            Option('setting', 'use_genres', None, title='Use genres from MusicBrainz')
         result = (
             '<p><em>%genre%</em></p><p>The specified genre information from MusicBrainz.</p><p><strong>Notes:</strong> multi-value '
             'variable.</p><p><strong>Option Settings:</strong> Use genres from MusicBrainz.</p>'
