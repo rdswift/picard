@@ -192,7 +192,7 @@ class TagVar:
 
     def links(self):
         if not self.doc_links:
-            return None
+            return
         for doclink in self.doc_links:
             yield f"<a href='{doclink.link}'>{doclink.title}</a>"
 
