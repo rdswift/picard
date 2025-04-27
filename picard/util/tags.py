@@ -198,7 +198,7 @@ class TagVar:
 
     def see_alsos(self):
         if not self.see_also:
-            return None
+            return
         for tag in self.see_also:
             name = ALL_TAGS.script_name_from_name(tag)
             if name:
