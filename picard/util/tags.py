@@ -199,8 +199,10 @@ class TagVar:
     def see_alsos(self):
         if not self.see_also:
             return None
-        for item in self.see_also:
-            yield f"%{item}%"
+        for tag in self.see_also:
+            name = ALL_TAGS.script_name_from_name(tag)
+            if name:
+                yield f"%{name}%"
 
     def _gen_sections(self, fmt, include_sections):
         for section_id in include_sections:
@@ -273,6 +275,12 @@ class TagVars(MutableSequence):
         item: TagVar = self._name2item.get(search_name, None)
 
         return name, tagdesc, search_name, item
+
+    def script_name_from_name(self, name):
+        tagname, tagdesc, search_name, item = self.item_from_name(name)
+        if item:
+            return str(item)
+        return None
 
     def display_name(self, name):
         name, tagdesc, search_name, item = self.item_from_name(name)
