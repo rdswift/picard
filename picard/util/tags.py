@@ -184,7 +184,7 @@ class TagVar:
 
     def related_options_titles(self):
         if not self.related_options:
-            return None
+            return
         for setting in self.related_options:
             title = get_option_title(setting)
             if title:
