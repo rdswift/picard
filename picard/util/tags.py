@@ -281,7 +281,7 @@ class TagVars(MutableSequence):
         tagname, tagdesc, search_name, item = self.item_from_name(name)
         if item:
             return str(item)
-        return
+        return None
 
     def display_name(self, name):
         name, tagdesc, search_name, item = self.item_from_name(name)
