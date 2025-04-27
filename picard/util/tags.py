@@ -900,7 +900,7 @@ ALL_TAGS = TagVars(
         ),
         see_also=('discid', ),
         is_calculated=True,
-        doc_links=(DocumentLink(N_('Disc ID Calculations'), PICARD_URLS['mb_doc'] + 'Disc_ID_Calculation'), ),
+        doc_links=(DocumentLink(N_('Disc ID Calculation'), PICARD_URLS['mb_doc'] + 'Disc_ID_Calculation'), ),
     ),
     TagVar(
         'musicbrainz_discids',
