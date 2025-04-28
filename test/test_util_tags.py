@@ -47,6 +47,16 @@ from picard.util.tags import (
 )
 
 
+def _translate_patch(s):
+    if s in {
+        "<p><strong>{title}:</strong> {values}.</p>",
+        "<p><em>%{name}%</em> [{tagdesc}]</p>{content}",
+        "<p><em>%{name}%</em></p>{content}",
+    }:
+        return s.replace('<p>', '<p dir="rtl">')
+    return f"_({s})"
+
+
 class TagVarTest(PicardTestCase):
     def test_basic_properties(self):
         tv = TagVar('name')
@@ -294,16 +304,6 @@ class TagVarsTest(PicardTestCase):
             '<p><strong>Notes:</strong> not provided from MusicBrainz data.</p>'
         )
         self.assertEqual(tagvars.display_tooltip('notes3'), result)
-
-    @staticmethod
-    def _translate_patch(s):
-        if s in {
-            "<p><strong>{title}:</strong> {values}.</p>",
-            "<p><em>%{name}%</em> [{tagdesc}]</p>{content}",
-            "<p><em>%{name}%</em></p>{content}",
-        }:
-            return s.replace('<p>', '<p dir="rtl">')
-        return f"_({s})"
 
     @mock.patch("picard.util.tags._", side_effect=_translate_patch)
     def test_tagvars_display_tooltip_translate(self, mock):
