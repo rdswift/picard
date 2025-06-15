@@ -96,6 +96,17 @@ class Filter(QtWidgets.QWidget):
 
         layout = QtWidgets.QVBoxLayout(dialog)
 
+        self.check_all_box = QtWidgets.QCheckBox(_('Select / clear all filters'))
+        self.check_all_box.setChecked(Filter.filterable_tags == self.selected_filters)
+        self.check_all_box.clicked.connect(self._check_all_box_clicked)
+        layout.addWidget(self.check_all_box)
+
+        # Add a horizontal separator
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        layout.addWidget(line)
+
         # Scroll area for tags
         scroll = QtWidgets.QScrollArea(dialog)
         scroll.setWidgetResizable(True)
@@ -120,11 +131,6 @@ class Filter(QtWidgets.QWidget):
 
         button_layout = QtWidgets.QHBoxLayout()
 
-        # clear all
-        self.filter_clear_button = QtWidgets.QPushButton(_('Clear All'))
-        self.filter_clear_button.clicked.connect(self._uncheck_all_filters)
-        button_layout.addWidget(self.filter_clear_button)
-
         # spacer
         spacer = QtWidgets.QSpacerItem(20, 0, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         button_layout.addItem(spacer)
@@ -147,6 +153,11 @@ class Filter(QtWidgets.QWidget):
         layout.addLayout(button_layout)
 
         return dialog
+
+    def _check_all_box_clicked(self):
+        state = self.check_all_box.checkState() == QtCore.Qt.CheckState.Checked
+        for checkbox in self.checkboxes.values():
+            checkbox.setChecked(state)
 
     def _uncheck_all_filters(self):
         for checkbox in self.checkboxes.values():
@@ -172,6 +183,8 @@ class Filter(QtWidgets.QWidget):
             # Reset any changes to selected filters on dialog cancel
             for tag, checkbox in self.checkboxes.items():
                 checkbox.setChecked(tag in self.selected_filters)
+
+        self.check_all_box.setChecked(Filter.filterable_tags == self.selected_filters)
 
     @classmethod
     def apply_filters(cls):
