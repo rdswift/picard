@@ -17,6 +17,7 @@
 
 from unittest.mock import (
     MagicMock,
+    call,
     patch,
 )
 
@@ -40,6 +41,7 @@ class TestOptionsDialogPluginNotes(PicardTestCase):
         dialog._load_page.return_value = page
         dialog._current_page.return_value = page
         dialog._pending_plugin_notes = False
+        dialog._plugin_notes_already_shown = False
         dialog._show_plugin_notes = lambda: OptionsDialog._show_plugin_notes(dialog)
         dialog._defer_plugin_notes = lambda: OptionsDialog._defer_plugin_notes(dialog)
         return dialog
@@ -93,3 +95,19 @@ class TestOptionsDialogPluginNotes(PicardTestCase):
 
         single_shot.assert_called_once_with(200, dialog._show_plugin_notes)
         self.assertFalse(dialog._pending_plugin_notes)
+
+    @patch('picard.ui.options.dialog.PluginNotesDialog')
+    def test_notes_shown_once_per_options_dialog_instance(self, notes_dialog_cls):
+        notes_dialog_cls.is_hidden.return_value = False
+        first = self._make_dialog_stub(visible=True)
+        second = self._make_dialog_stub(visible=True)
+
+        OptionsDialog._show_plugin_notes(first)
+        OptionsDialog._show_plugin_notes(first)
+        OptionsDialog._show_plugin_notes(second)
+        OptionsDialog._show_plugin_notes(second)
+
+        self.assertEqual(notes_dialog_cls.call_args_list, [call(first), call(second)])
+        self.assertEqual(notes_dialog_cls.return_value.show.call_count, 2)
+        self.assertTrue(first._plugin_notes_already_shown)
+        self.assertTrue(second._plugin_notes_already_shown)

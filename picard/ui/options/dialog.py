@@ -307,6 +307,7 @@ class OptionsDialog(PicardDialog, SingletonDialog):
     def __init__(self, default_page=None, parent=None):
         super().__init__(parent=parent)
         self._pending_plugin_notes = False
+        self._plugin_notes_already_shown = False
         if DebugOpt.TIMINGS.enabled:
             _init_t0 = time.perf_counter_ns()
         if modal_options():
@@ -467,8 +468,9 @@ class OptionsDialog(PicardDialog, SingletonDialog):
             self._pending_plugin_notes = True
             return
         page = self._current_page()
-        if page is None or page.NAME != 'plugins' or PluginNotesDialog.is_hidden():
+        if page is None or page.NAME != 'plugins' or PluginNotesDialog.is_hidden() or self._plugin_notes_already_shown:
             return
+        self._plugin_notes_already_shown = True
         PluginNotesDialog(self).show()
 
     def _constrain_to_screen(self):
@@ -831,7 +833,7 @@ class OptionsDialog(PicardDialog, SingletonDialog):
             log.debug("switch_page: Saving page '%s' to options_last_active_page", page.NAME)
             config.persist['options_last_active_page'] = page.NAME
 
-            if page.NAME == 'plugins' and not PluginNotesDialog.is_hidden():
+            if page.NAME == 'plugins' and not self._plugin_notes_already_shown and not PluginNotesDialog.is_hidden():
                 self._show_plugin_notes()
 
     def disable_page(self, pagename):
