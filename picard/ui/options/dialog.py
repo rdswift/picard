@@ -73,6 +73,7 @@ from picard.ui import (
     modal_options,
 )
 from picard.ui.colors import interface_colors as _interface_colors
+from picard.ui.dialogs.pluginnotes import PluginNotesDialog
 from picard.ui.forms.ui_options import Ui_OptionsDialog
 from picard.ui.forms.ui_options_attached_profiles import (
     Ui_AttachedProfilesDialog,
@@ -305,6 +306,7 @@ class OptionsDialog(PicardDialog, SingletonDialog):
 
     def __init__(self, default_page=None, parent=None):
         super().__init__(parent=parent)
+        self._pending_plugin_notes = False
         if DebugOpt.TIMINGS.enabled:
             _init_t0 = time.perf_counter_ns()
         if modal_options():
@@ -447,10 +449,27 @@ class OptionsDialog(PicardDialog, SingletonDialog):
         # Highlights are cosmetic (background colors on widgets) and
         # applying them after the first paint avoids blocking display.
         QtCore.QTimer.singleShot(0, self._deferred_highlight_profile_options)
+        if self._pending_plugin_notes:
+            self._defer_plugin_notes()
 
     def _deferred_highlight_profile_options(self):
         with DebugOpt.TIMINGS.timing("OptionsDialog: highlight_enabled_profile_options"):
             self.highlight_enabled_profile_options()
+
+    def _defer_plugin_notes(self):
+        self._pending_plugin_notes = False
+        # Slight delay to avoid the dialog being displayed outside the options window
+        QtCore.QTimer.singleShot(200, self._show_plugin_notes)
+
+    def _show_plugin_notes(self):
+        self._pending_plugin_notes = False
+        if not self.isVisible():
+            self._pending_plugin_notes = True
+            return
+        page = self._current_page()
+        if page is None or page.NAME != 'plugins' or PluginNotesDialog.is_hidden():
+            return
+        PluginNotesDialog(self).show()
 
     def _constrain_to_screen(self):
         """Ensure the dialog fits within the available screen geometry."""
@@ -811,6 +830,9 @@ class OptionsDialog(PicardDialog, SingletonDialog):
             config = get_config()
             log.debug("switch_page: Saving page '%s' to options_last_active_page", page.NAME)
             config.persist['options_last_active_page'] = page.NAME
+
+            if page.NAME == 'plugins' and not PluginNotesDialog.is_hidden():
+                self._show_plugin_notes()
 
     def disable_page(self, pagename):
         item = self.pagename_to_item[pagename]
