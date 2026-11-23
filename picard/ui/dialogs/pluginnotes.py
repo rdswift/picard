@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 
-
 from PyQt6 import QtWidgets
 
 from picard.i18n import (
@@ -24,6 +23,7 @@ from picard.i18n import (
 )
 
 from picard.ui.dialogs.donotshowagainmessagebox import DoNotShowAgainMessageBox
+from picard.ui.dialogs.installconfirm import PLUGIN_TRUST_WARNING
 
 
 class PluginNotesDialog(DoNotShowAgainMessageBox):
@@ -33,24 +33,16 @@ class PluginNotesDialog(DoNotShowAgainMessageBox):
     TITLE = N_("Plugin Page Notes")
 
     def __init__(self, parent):
-        text = _(
-            "<p>"
-            "Picard's functionality can be extended through the use of plugins. "
-            "Plugins can be installed/uninstalled and enabled/disabled from the "
-            "Options menu. Installed plugins are loaded during the startup of "
-            "Picard, and are made available to the program."
-            "</p><p>"
-            "The Plugins page under the Options menu differs from all other option "
-            "settings pages in that any changes made or actions taken on this page "
-            "are processed immediately and are not reverted if the user clicks "
-            "\"Cancel\"."
-            "</p><p>"
-            "<strong>Be aware that installing plugins from unknown sources may pose "
-            "security risks. Only install plugins from sources you trust!</strong>"
-            "</p>"
+        # One translatable string per paragraph, markup stays out of the msgids
+        paragraphs = (
+            _("Plugins extend Picard's functionality. Installed plugins are loaded when Picard starts."),
+            _(
+                "The Plugins page differs from the other option pages. Changes made and "
+                "actions taken here are applied immediately, and are not reverted when "
+                "the Options dialog is closed without saving."
+            ),
+            "<strong>%s</strong>" % _(PLUGIN_TRUST_WARNING),
         )
+        text = ''.join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
 
-        super().__init__(parent, text=text)
-
-        pixmap = self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_MessageBoxWarning).pixmap(24, 24)
-        self.setIconPixmap(pixmap)
+        super().__init__(parent, text=text, icon=QtWidgets.QMessageBox.Icon.Warning)
