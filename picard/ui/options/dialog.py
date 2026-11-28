@@ -1064,7 +1064,7 @@ class AttachedProfilesDialog(PicardDialog):
         self.ui.buttonBox.rejected.connect(self.close_window)
         self.ui.splitter.setStretchFactor(1, 1)
 
-        self.setWindowTitle(_("Profiles Attached to Options in %s Section") % self.option_group['title'])
+        self.setWindowTitle(_("Enabled Profiles and Options in %s Section") % self.option_group['title'])
 
         # Only show enabled profiles
         self._enabled_profiles = [p for p in self.profile_page._clean_and_get_all_profiles() if p['enabled']]

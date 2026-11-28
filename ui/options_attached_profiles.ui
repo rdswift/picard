@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Profiles Attached to Options</string>
+   <string>Enabled Profiles Attached to Options</string>
   </property>
   <layout class="QVBoxLayout" name="vboxlayout">
    <property name="spacing">
@@ -51,7 +51,7 @@
        <item>
         <widget class="QLabel" name="profiles_label">
          <property name="text">
-          <string>Profiles</string>
+          <string>Enabled Profiles</string>
          </property>
         </widget>
        </item>

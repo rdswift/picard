@@ -64,6 +64,6 @@ class Ui_AttachedProfilesDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AttachedProfilesDialog)
 
     def retranslateUi(self, AttachedProfilesDialog):
-        AttachedProfilesDialog.setWindowTitle(_("Profiles Attached to Options"))
-        self.profiles_label.setText(_("Profiles"))
+        AttachedProfilesDialog.setWindowTitle(_("Enabled Profiles Attached to Options"))
+        self.profiles_label.setText(_("Enabled Profiles"))
         self.options_label.setText(_("Options in this section"))
